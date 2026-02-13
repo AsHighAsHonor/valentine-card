@@ -68,8 +68,9 @@
             pointer-events: auto;
         }
         
+        /* Adjusted: Move spine to center when open to balance the spread */
         #card-wrapper.open {
-            transform: translate(-50%, -50%);
+            transform: translate(0, -50%);
         }
 
         .scene-wrapper { 
@@ -80,6 +81,7 @@
             transition: transform 0.8s ease-in-out;
         }
         
+        /* Ensure scene origin stays at wrapper origin */
         .open .scene-wrapper { transform: translateX(0); }
 
         .card-inner {
@@ -360,9 +362,10 @@
                     p.x += p.vx + Math.sin(t*0.3 + p.phi) * 0.03; p.y += p.vy + Math.cos(t*0.3 + p.phi) * 0.03; p.z += p.vz;
                     if(Math.abs(p.x) > 800) p.vx *= -1; if(Math.abs(p.y) > 800) p.vy *= -1;
                 } else if (state === 'HEART') {
-                    p.x += Math.sin(t * 0.5 + p.phi) * 0.15;
-                    p.y += Math.cos(t * 0.5 + p.phi) * 0.15;
-                    p.z += Math.sin(t * 0.8 + p.phi) * 0.08;
+                    // ENHANCED: Internal Star Drift inside the heart for "living繁星" feel
+                    p.x += Math.sin(t * 0.8 + p.phi) * 0.25;
+                    p.y += Math.cos(t * 0.8 + p.phi) * 0.25;
+                    p.z += Math.sin(t * 1.2 + p.phi) * 0.15;
                 }
                 posAttr.array[i*3] = p.x; posAttr.array[i*3+1] = p.y; posAttr.array[i*3+2] = p.z;
             }

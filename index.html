@@ -80,8 +80,7 @@
             transition: transform 0.8s ease-in-out;
         }
         
-        /* Centering the opened spread by translating right by half card width */
-        .open .scene-wrapper { transform: translateX(calc(var(--card-width) / 2)); }
+        .open .scene-wrapper { transform: translateX(0); }
 
         .card-inner {
             position: relative;
@@ -211,9 +210,9 @@
     
     <div id="card-wrapper">
         <div class="scene-wrapper" id="scene">
-            <div class="card-cover-axis" id="cover-axis">
+            <div class="card-inner" id="card-inner" onclick="openBook(this)">
                 <!-- Front -->
-                <div class="card-face cover-front velvet-texture" onclick="openBook()">
+                <div class="card-face card-front velvet-texture">
                     <div class="gold-heart-border">
                         <div class="border-heart bh-tl"></div><div class="border-heart bh-tr"></div>
                         <div class="border-heart bh-bl"></div><div class="border-heart bh-br"></div>
@@ -229,8 +228,8 @@
                         <p class="instruction">Tap to Unveil</p>
                     </div>
                 </div>
-                <!-- Back (Opened Left Page) -->
-                <div class="card-face cover-back">
+                <!-- Back -->
+                <div class="card-face card-back">
                     <div class="gold-heart-border" style="border-color: rgba(74, 5, 5, 0.1);">
                         <div class="border-heart bh-tl" style="background: rgba(74, 5, 5, 0.2);"></div><div class="border-heart bh-tr" style="background: rgba(74, 5, 5, 0.2);"></div>
                         <div class="border-heart bh-bl" style="background: rgba(74, 5, 5, 0.2);"></div><div class="border-heart bh-br" style="background: rgba(74, 5, 5, 0.2);"></div>
@@ -302,7 +301,7 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
             const renderScene = new THREE.RenderPass(scene3d, camera);
-            const bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.4, 0.85);
+            const bloomPass = new UnrealBloomPassCustom(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.4, 0.85);
             composer = new THREE.EffectComposer(renderer);
             composer.addPass(renderScene);
             composer.addPass(bloomPass);
@@ -310,6 +309,10 @@
             animate();
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('resize', onWindowResize);
+        }
+
+        function UnrealBloomPassCustom(res, str, rad, thres) {
+            return new THREE.UnrealBloomPass(res, str, rad, thres);
         }
 
         function createParticles() {
@@ -421,6 +424,7 @@
             const colAttr = particles.geometry.attributes.color.array;
             const posAttr = particles.geometry.attributes.position.array;
             const rubyColor = new THREE.Color(0x9b111e); const emeraldColor = new THREE.Color(0x50c878); const goldColor = new THREE.Color(0xd4af37);
+            
             const raycaster = new THREE.Raycaster();
             const clickHandler = (event) => {
                 if (state !== 'ROSE') return;
@@ -430,6 +434,7 @@
                 if (intersects.length > 0) transformToHeart();
             };
             window.addEventListener('click', clickHandler);
+
             points.forEach((p, i) => {
                 const t = Math.random() * Math.PI * 2; const ph = Math.random() * Math.PI;
                 let tx, ty, tz, targetC;
